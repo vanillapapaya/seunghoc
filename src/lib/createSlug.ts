@@ -11,8 +11,8 @@ export default function (title: string, staticSlug: string) {
       .toLowerCase()
       // replace spaces
       .replace(/\s+/g, '-')
-      // remove special characters
-      .replace(/[^\w-]/g, '')
+      // remove special characters but keep Korean characters
+      .replace(/[^\w\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF-]/g, '')
       // remove leading & trailing separtors
       .replace(/^-+|-+$/g, '')
   )

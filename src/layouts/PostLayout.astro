@@ -1,43 +1,521 @@
 ---
 import { type BlogSchema } from "../content/config";
 import BaseLayout from "./BaseLayout.astro";
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export interface Props extends BlogSchema {}
 
-const { title, description, pubDate, updatedDate, heroImage, badge, tags = [] } = Astro.props;
-dayjs.extend(localizedFormat);
-const displayDate = dayjs(pubDate).format("ll")
+const { title, description, pubDate, updatedDate, heroImage, badge, tags = [], color } = Astro.props;
 import { Image } from "astro:assets";
+
+// Badge 색상 결정 함수
+function getBadgeColor() {
+  if (color) {
+    return color;
+  }
+  return 'bg-gray-100 text-gray-800';
+}
 ---
 
 <BaseLayout title={title} description={description} image={heroImage}, ogType="article">
-  <main class="md:flex md:justify-center">
-    <article class="prose prose-lg max-w-[750px] prose-img:mx-auto">
-      {heroImage && <Image width={750} height={422} format="webp" src={heroImage} alt={title} class="w-full mb-6" />}
-      <h1 class="title my-2 text-4xl font-bold">{title}</h1>
-      {pubDate && <time>{displayDate}</time>}
-      <br />
-      {badge && <div class="badge badge-secondary my-1">{badge}</div>}
-      {
-        tags &&
-          tags.map((tag) => (
-            <a href={`/blog/tag/${tag}`} class="badge badge-outline ml-2 no-underline">
-              {tag}
-            </a>
-          ))
-      }
-      {
-        updatedDate && (
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <article>
+      <!-- Post Header -->
+      <header class="mb-8">
+        <h1 class="text-sm font-bold mb-4 terminal-header">{title}</h1>
+        
+        <div class="flex flex-wrap gap-4 mb-4 text-sm text-gray-600">
           <div>
-            {" "}
-            Last updated on <time>{updatedDate}</time>{" "}
+            {pubDate.toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric' 
+            })}
           </div>
-        )
-      }
-      <div class="divider my-2"></div>
-      <slot />
+          
+          {badge && (
+            <div>
+              <span class={`px-2 py-1 rounded-full text-xs font-medium ${getBadgeColor()}`}>
+                {badge}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <p class="text-sm text-gray-600 mb-6 leading-relaxed">{description}</p>
+
+        <!-- Tags -->
+        {tags && tags.length > 0 && (
+          <div class="flex flex-wrap gap-3 mb-6">
+            {tags.map((tag) => (
+              <span class="text-sm text-gray-400">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {updatedDate && (
+          <div class="text-xs text-gray-500 mb-4">
+            Last updated on {new Date(updatedDate).toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric' 
+            })}
+          </div>
+        )}
+      </header>
+
+      <!-- Hero Image -->
+      {heroImage && <Image width={750} height={422} format="webp" src={heroImage} alt={title} class="w-full mb-8 rounded-lg" />}
+
+      <!-- Post Content -->
+      <div class="prose max-w-none terminal-text">
+        <slot />
+      </div>
+
+      <!-- Back to Posts -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <a 
+          href="/blog" 
+          class="inline-flex items-center text-gray-700 hover:text-gray-900"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          모든 포스트 보기
+        </a>
+      </div>
     </article>
-  </main>
+  </div>
 </BaseLayout>
+
+<style is:global>
+  a {
+    color: #374151;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: #111827;
+  }
+
+  /* Prose 스타일링 */
+  .prose {
+    line-height: 1.6;
+    font-size: 0.875rem;
+  }
+
+  /* 한국어 단어 분리 방지 */
+  .prose * {
+    word-break: keep-all;
+    line-break: anywhere;
+  }
+
+  /* 헤더 스타일 */
+  article .prose h1,
+  article .prose h2, 
+  article .prose h3, 
+  article .prose h4, 
+  article .prose h5, 
+  article .prose h6 {
+    color: #111827 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+
+  article .prose h1 {
+    font-weight: 800 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    padding-bottom: 0.5rem !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  article .prose h2 {
+    font-weight: 700 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  article .prose h3 {
+    font-weight: 600 !important;
+    font-style: normal !important;
+    letter-spacing: 0.025em !important;
+  }
+
+  article .prose h4 {
+    font-weight: 600 !important;
+    text-decoration: none !important;
+  }
+
+  article .prose h5 {
+    font-weight: 500 !important;
+    font-style: normal !important;
+  }
+
+  article .prose h6 {
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+  }
+
+  .prose p {
+    margin-bottom: 1rem;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: 1rem;
+    padding-left: 2.5rem; /* 더 많이 들여쓰기 */
+    font-size: 0.875rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+    color: #374151;
+  }
+
+  .prose blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #6b7280;
+    font-style: italic;
+    font-size: 0.875rem;
+    word-break: keep-all;
+    line-break: anywhere;
+  }
+
+  .prose code {
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    border: 1px solid #4a5568;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+
+  /* 코드 블록 스타일 - 강제 적용 */
+  .prose pre,
+  article pre,
+  .content pre {
+    background-color: #1a202c !important;  /* 원래 짙은 회색으로 복원 */
+    color: #e2e8f0 !important;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: none !important;  /* 테두리 제거 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  
+  /* 코드 블록 내부 텍스트 배경색 및 외곽선 제거 */
+  .prose pre code,
+  .prose pre code *,
+  .prose pre span,
+  .prose pre span *,
+  .prose pre .token,
+  .prose pre .keyword,
+  .prose pre .string,
+  .prose pre .comment,
+  .prose pre .number,
+  .prose pre .operator,
+  .prose pre .punctuation,
+  .prose pre .function,
+  .prose pre .class-name {
+    background-color: transparent !important;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
+  }
+
+  .prose strong {
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+  }
+
+  .prose th, .prose td {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    text-align: left;
+    font-size: 0.875rem;
+    word-break: keep-all;
+    line-break: anywhere;
+  }
+
+  .prose th {
+    background-color: #f9fafb;
+    font-weight: 600;
+  }
+
+  /* Mermaid 다이어그램 스타일링 */
+  .prose .mermaid {
+    text-align: center;
+    margin: 2rem 0;
+    background: transparent;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .prose pre.mermaid {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Mermaid 코드 블록 전용 스타일 */
+  .prose pre code.language-mermaid {
+    display: block;
+    background: transparent !important;
+    color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+  }
+  
+  .prose .language-mermaid {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* 이미지 스타일링 */
+  .prose img {
+    width: 70%;
+    max-width: 70%;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+    border-radius: 0.5rem;
+  }
+
+  /* 이미지 캡션 스타일 */
+  .prose img + em {
+    display: block;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  /* 이미지 갤러리 그리드 */
+  .prose .image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .prose .image-gallery img {
+    margin: 0;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  /* Image Lightbox Styles */
+  .image-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .image-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .image-lightbox img {
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    cursor: default;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+  }
+  
+  .image-lightbox.active img {
+    transform: scale(1);
+  }
+  
+  .image-lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .image-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+  
+  .image-lightbox-info {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    font-size: 14px;
+    max-width: 80vw;
+  }
+  
+  /* Clickable images cursor */
+  .prose img {
+    cursor: zoom-in;
+    transition: all 0.2s ease;
+  }
+  
+  .prose img:hover {
+    filter: brightness(1.05);
+    transform: scale(1.02);
+  }
+</style>
+
+<script is:inline>
+  // Image Lightbox 기능
+  function initImageLightbox() {
+    // 라이트박스 엘리먼트 생성
+    const lightbox = document.createElement('div');
+    lightbox.className = 'image-lightbox';
+    lightbox.innerHTML = `
+      <div class="image-lightbox-close">×</div>
+      <img src="" alt="" />
+      <div class="image-lightbox-info"></div>
+    `;
+    document.body.appendChild(lightbox);
+    
+    const lightboxImg = lightbox.querySelector('img');
+    const lightboxInfo = lightbox.querySelector('.image-lightbox-info');
+    const closeBtn = lightbox.querySelector('.image-lightbox-close');
+    
+    // 모든 prose 이미지에 클릭 이벤트 추가
+    const proseImages = document.querySelectorAll('.prose img');
+    proseImages.forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // 이미지 정보 설정
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        
+        // alt 텍스트가 있으면 정보로 표시
+        if (img.alt && img.alt.trim()) {
+          lightboxInfo.textContent = img.alt;
+          lightboxInfo.style.display = 'block';
+        } else {
+          lightboxInfo.style.display = 'none';
+        }
+        
+        // 라이트박스 표시
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    // 라이트박스 닫기 이벤트
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // 닫기 버튼 클릭
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+    
+    // 배경 클릭으로 닫기
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+    
+    // ESC 키로 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+    
+    // 이미지 클릭 시 닫기 방지
+    lightboxImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+  
+  // DOM 로드 완료 후 이미지 라이트박스 초기화
+  document.addEventListener('DOMContentLoaded', initImageLightbox);
+  
+  // Astro View Transitions 대응
+  document.addEventListener('astro:page-load', () => {
+    // 새로운 페이지로 이동할 때마다 이미지 라이트박스 재초기화
+    if (typeof initImageLightbox === 'function') {
+      setTimeout(() => {
+        initImageLightbox();
+      }, 50);
+    }
+  });
+</script>

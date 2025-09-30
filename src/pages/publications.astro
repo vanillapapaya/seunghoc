@@ -1,0 +1,102 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout sideBarActiveItemID="publications">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <h1 class="text-2xl font-bold mb-6">Publications</h1>
+    
+    <!-- Selected Publications -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4">Selected Publications</h2>
+      
+      <div class="mb-6">
+        <h3 class="text-lg font-medium mb-2">
+          <a href="/publications/ramen-market-analysis.pdf" class="text-blue-600 hover:underline" target="_blank">
+            Ramen Market Analysis: Consumer Behavior and Brand Preferences in South Korea
+          </a>
+        </h3>
+        <p class="text-gray-600 mb-2">seunghoc</p>
+        <p class="text-sm text-gray-500 mb-2">Market Research Journal, 2024</p>
+        <p class="text-sm">
+          A comprehensive analysis of consumer preferences in the Korean ramen market, 
+          examining brand loyalty patterns and purchasing behavior across different demographics.
+        </p>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-medium mb-2">
+          <a href="/publications/game-analytics.pdf" class="text-blue-600 hover:underline" target="_blank">
+            Mobile Game User Retention: A Data-Driven Approach to Player Engagement
+          </a>
+        </h3>
+        <p class="text-gray-600 mb-2">seunghoc</p>
+        <p class="text-sm text-gray-500 mb-2">Game Analytics Conference, 2024</p>
+        <p class="text-sm">
+          Using cohort analysis and survival analysis techniques to understand user retention 
+          patterns in mobile gaming applications.
+        </p>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-medium mb-2">
+          <a href="/publications/data-visualization.pdf" class="text-blue-600 hover:underline" target="_blank">
+            Effective Data Visualization Principles for Business Intelligence Dashboards
+          </a>
+        </h3>
+        <p class="text-gray-600 mb-2">seunghoc</p>
+        <p class="text-sm text-gray-500 mb-2">Business Intelligence Quarterly, 2023</p>
+        <p class="text-sm">
+          Best practices for creating clear and actionable data visualizations 
+          that drive business decision-making.
+        </p>
+      </div>
+    </div>
+
+    <!-- Working Papers -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4">Working Papers</h2>
+      
+      <div class="mb-4">
+        <h3 class="text-lg font-medium mb-2">
+          Machine Learning Applications in Consumer Preference Prediction
+        </h3>
+        <p class="text-gray-600 mb-2">seunghoc</p>
+        <p class="text-sm">
+          Exploring the use of machine learning algorithms to predict consumer behavior 
+          patterns in retail environments.
+        </p>
+      </div>
+    </div>
+
+    <!-- Conference Presentations -->
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Conference Presentations</h2>
+      
+      <div class="mb-4">
+        <h3 class="text-lg font-medium mb-2">
+          "Data-Driven Market Research: Tools and Techniques"
+        </h3>
+        <p class="text-gray-600 mb-1">Korean Marketing Association Conference, Seoul, 2024</p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-lg font-medium mb-2">
+          "Game Analytics: Understanding Player Behavior Through Data"
+        </h3>
+        <p class="text-gray-600 mb-1">Asia Game Analytics Summit, Tokyo, 2023</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+</style>

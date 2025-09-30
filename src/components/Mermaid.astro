@@ -1,0 +1,57 @@
+---
+interface Props {
+  code: string;
+  id?: string;
+}
+
+const { code, id = `mermaid-${Math.random().toString(36).substr(2, 9)}` } = Astro.props;
+---
+
+<div class="mermaid-container">
+  <div id={id} class="mermaid">{code}</div>
+</div>
+
+<script define:vars={{ id, code }}>
+  // Mermaid 라이브러리가 로드되었는지 확인하고 렌더링
+  function renderMermaid() {
+    if (typeof mermaid !== 'undefined') {
+      // 이미 렌더링된 요소가 있으면 제거
+      const element = document.getElementById(id);
+      if (element && element.getAttribute('data-processed')) {
+        return;
+      }
+      
+      // Mermaid 렌더링
+      mermaid.init({ noteMargin: 10 }, `#${id}`);
+    } else {
+      // Mermaid가 아직 로드되지 않았으면 잠시 후 재시도
+      setTimeout(renderMermaid, 100);
+    }
+  }
+
+  // DOM이 준비되면 렌더링 시작
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderMermaid);
+  } else {
+    renderMermaid();
+  }
+</script>
+
+<style>
+  .mermaid-container {
+    margin: 2rem 0;
+    text-align: center;
+  }
+  
+  .mermaid {
+    background: transparent;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+  
+  /* Mermaid 다이어그램 스타일링 */
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

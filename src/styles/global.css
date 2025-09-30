@@ -1,3 +1,171 @@
+/* 기존 타임라인 스타일 유지 */
 .time-line-container>div:last-child .education__time>.education__line {
     display: none;
+}
+
+/* 터미널 스타일 전역 설정 */
+:root {
+    /* 터미널 색상 */
+    --terminal-bg: #000000;
+    --terminal-fg: #00ff00;
+    --terminal-accent: #ffffff;
+    --paper-bg: #ffffff;
+    --paper-fg: #000000;
+    --paper-accent: #0066cc;
+    --paper-border: #e5e5e5;
+}
+
+/* 기본 폰트를 한글 지원 모노스페이스로 설정 */
+* {
+    font-family: 'JetBrains Mono', 'Pretendard', 'Source Code Pro', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, '맑은 고딕', 'Malgun Gothic', sans-serif !important;
+}
+
+/* 전체 레이아웃 */
+html, body {
+    background-color: var(--paper-bg) !important;
+    color: var(--paper-fg) !important;
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+}
+
+/* 헤딩 스타일 */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+}
+
+/* 네비게이션 스타일 */
+.nav-link {
+    font-family: 'Iosevka Web', monospace !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* 모든 배경색을 흰색으로 */
+.bg-base-100, .bg-base-200, .bg-base-300 {
+    background-color: var(--paper-bg) !important;
+}
+
+/* 모든 텍스트를 검은색으로 */
+.text-base-content, .text-primary, .text-secondary {
+    color: var(--paper-fg) !important;
+}
+
+/* 링크 스타일 */
+a {
+    color: var(--paper-fg) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+}
+
+a:hover {
+    text-decoration: underline !important;
+    color: #374151 !important; /* 호버 시 더 진한 회색 */
+}
+
+/* 코드 블록과 인라인 코드 스타일 */
+code, pre {
+    font-family: 'Iosevka Web', monospace !important;
+    background-color: #f8f8f8 !important;
+    border: 1px solid var(--paper-border) !important;
+    border-radius: 3px !important;
+}
+
+code {
+    padding: 0.2em 0.4em !important;
+    font-size: 0.9em !important;
+}
+
+pre {
+    padding: 1em !important;
+    overflow-x: auto !important;
+}
+
+/* 터미널 느낌의 특별한 스타일 클래스 */
+.terminal-text {
+    font-family: 'Iosevka Web', monospace !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.terminal-header {
+    font-family: 'Iosevka Web', monospace !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+}
+
+/* 프로젝트 보더 스타일 개선 */
+.border-l-4 {
+    border-left-width: 4px !important;
+}
+
+/* 버튼 스타일 */
+.btn, button {
+    font-family: 'Iosevka Web', monospace !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* 폼 요소 스타일 */
+input, textarea, select {
+    font-family: 'Iosevka Web', monospace !important;
+    border: 1px solid var(--paper-border) !important;
+}
+
+/* 테이블 스타일 */
+table {
+    font-family: 'Iosevka Web', monospace !important;
+    border-collapse: collapse !important;
+}
+
+th, td {
+    border: 1px solid var(--paper-border) !important;
+    padding: 0.5em !important;
+}
+
+/* 리스트 스타일 */
+ul, ol {
+    font-family: 'Iosevka Web', monospace !important;
+}
+
+/* PDF iframe 터미널 스타일 */
+iframe {
+    border: 2px solid var(--paper-border) !important;
+    background-color: var(--paper-bg) !important;
+}
+
+/* 반응형 폰트 크기 조정 */
+@media (max-width: 768px) {
+    * {
+        font-size: 0.95em !important;
+    }
+    
+    h1 {
+        font-size: 1.8rem !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    h3 {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* 특별한 터미널 요소들 */
+.prompt::before {
+    content: "$ ";
+    color: var(--paper-accent);
+    font-weight: 600;
+}
+
+.command {
+    color: var(--paper-accent);
+    font-weight: 500;
+}
+
+.output {
+    color: var(--paper-fg);
+    font-weight: 400;
 }

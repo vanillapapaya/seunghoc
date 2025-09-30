@@ -1,40 +1,160 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
 ---
 
-<BaseLayout title="Projects" sideBarActiveItemID="services">
-  <div>
-    <div class="text-3xl w-full font-bold mb-5">Services Header</div>
-  </div>
+<BaseLayout title="Services" sideBarActiveItemID="services">
+  <div class="max-w-7xl mx-auto px-8 py-8">
+    
+    <h1 class="text-sm font-bold mb-6">Services</h1>
+    
+    <p class="text-sm text-gray-600 mb-8">
+      데이터 기반 게임 운영 전략 수립과 비즈니스 인사이트 제공을 통해 
+      게임의 지속가능한 성장을 지원합니다.
+    </p>
 
-  <HorizontalCard
-    title="Service 1"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    badge="NEW"
-    url="#"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Service 2"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Service 3"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="NEW"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Service 4"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
+    <!-- Service 1 -->
+    <div class="mb-8 pb-6 border-b border-gray-200">
+      <h2 class="text-sm font-bold mb-2">01. 게임 운영 데이터 분석</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        유저 행동 패턴 분석, 이탈 방지 전략 수립, KPI 설계 및 실시간 모니터링 대시보드 구축
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2">제공 서비스</h3>
+      <ul class="text-sm text-gray-600 space-y-1 ml-4">
+        <li>• 유저 행동 패턴 및 이탈 요인 분석</li>
+        <li>• 매출 상관성 분석 및 예측 모델 구축</li>
+        <li>• KPI 설계 및 PowerBI/Tableau 대시보드 개발</li>
+        <li>• 신규 유저 온보딩 프로세스 최적화</li>
+      </ul>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">결과물</h3>
+      <p class="text-sm text-gray-600">
+        분석 보고서 + 대시보드 + 실행 가능한 전략 제안서
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">관련 프로젝트</h3>
+      <div class="flex flex-wrap gap-2">
+        <a href="/projects/traffic-revenue-correlation" class="text-sm text-blue-600 hover:underline">
+          #트래픽-매출 상관성 분석
+        </a>
+        <a href="/projects/reducing-newbie-churn" class="text-sm text-blue-600 hover:underline">
+          #신규유저 이탈 방지
+        </a>
+      </div>
+    </div>
+
+    <!-- Service 2 -->
+    <div class="mb-8 pb-6 border-b border-gray-200">
+      <h2 class="text-sm font-bold mb-2">02. 신규 게임 시장 진입 전략</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        경쟁사 벤치마킹, 타겟 유저 분석, 포지셔닝 전략 수립, Pre-launch 리스크 평가
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2">제공 서비스</h3>
+      <ul class="text-sm text-gray-600 space-y-1 ml-4">
+        <li>• 경쟁 게임 7-10개 심층 벤치마킹</li>
+        <li>• 시장 포화도 및 진입 장벽 정량화</li>
+        <li>• 차별화 포인트 도출 및 포지셔닝 전략</li>
+        <li>• 예상 ROI 및 리스크 시나리오 분석</li>
+      </ul>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">결과물</h3>
+      <p class="text-sm text-gray-600">
+        시장 분석 보고서 + 론칭 전략 가이드 + 3가지 시나리오별 실행안
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">활용 사례</h3>
+      <p class="text-sm text-gray-600">
+        신규 FPS 게임 Pre-launch 리스크 평가 → 론칭 포기 권고로 80억원 규모 손실 방지
+      </p>
+    </div>
+
+    <!-- Service 3 -->
+    <div class="mb-8 pb-6 border-b border-gray-200">
+      <h2 class="text-sm font-bold mb-2">03. 수익화 모델 최적화</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        BM 구조 분석, 가챠/패스 시스템 효율 분석, ARPU/LTV 증대 전략 수립
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2">제공 서비스</h3>
+      <ul class="text-sm text-gray-600 space-y-1 ml-4">
+        <li>• 현 BM의 병목 구간 및 개선 포인트 도출</li>
+        <li>• 프리미엄 아이템 판매 타이밍 최적화</li>
+        <li>• 계절성 기반 수익화 전략 설계</li>
+        <li>• 업데이트 및 이벤트 효과 분석</li>
+      </ul>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">결과물</h3>
+      <p class="text-sm text-gray-600">
+        BM 분석 보고서 + 수익 시뮬레이션 + 최적화 전략안
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">관련 프로젝트</h3>
+      <div class="flex flex-wrap gap-2">
+        <a href="/projects/traffic-revenue-correlation" class="text-sm text-blue-600 hover:underline">
+          #매출 예측 모델링
+        </a>
+      </div>
+    </div>
+
+    <!-- Service 4 -->
+    <div class="mb-8 pb-6">
+      <h2 class="text-sm font-bold mb-2">04. 게임 디자인 & UX 분석</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        게임 메커니즘 분석, UI/UX 사용성 평가, 경쟁 게임 역공학 분석
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2">제공 서비스</h3>
+      <ul class="text-sm text-gray-600 space-y-1 ml-4">
+        <li>• 게임 메커니즘과 비즈니스 메트릭 연결 분석</li>
+        <li>• UI/UX 병목 구간 식별 및 개선안 도출</li>
+        <li>• 경쟁작 성공/실패 사례의 패턴 분석</li>
+        <li>• 3D 게임 공간 분석 (맵 디자인 최적화)</li>
+      </ul>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">결과물</h3>
+      <p class="text-sm text-gray-600">
+        심층 분석 리포트 + 디자인 개선 권고안 + 우선순위별 실행 로드맵
+      </p>
+      
+      <h3 class="text-sm font-semibold mb-2 mt-4">관련 프로젝트</h3>
+      <div class="flex flex-wrap gap-2">
+        <a href="/projects/3d-spatial-analysis" class="text-sm text-blue-600 hover:underline">
+          #3D 공간 분석
+        </a>
+        <a href="/blog" class="text-sm text-blue-600 hover:underline">
+          #게임 디자인 분석 시리즈
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact CTA -->
+    <div class="mt-10 p-6 bg-gray-50 rounded-lg">
+      <h2 class="text-sm font-bold mb-3">프로젝트 문의</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        게임 데이터 분석 또는 전략 컨설팅이 필요하신가요?<br>
+        프로젝트 규모와 목표에 맞는 맞춤형 제안을 드립니다.
+      </p>
+      <div class="flex gap-4">
+        <a href="mailto:seunghoc94@gmail.com" class="text-sm text-blue-600 hover:underline">
+          📧 seunghoc94@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/seungho-chae" target="_blank" class="text-sm text-blue-600 hover:underline">
+          💼 LinkedIn
+        </a>
+      </div>
+    </div>
+
+  </div>
 </BaseLayout>
+
+<style>
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+</style>

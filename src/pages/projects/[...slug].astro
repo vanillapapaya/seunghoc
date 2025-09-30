@@ -1,0 +1,1147 @@
+---
+import { CollectionEntry, getCollection } from "astro:content";
+import { ProjectSchema } from "../../content/config";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const projectEntries = await getCollection("projects");
+  return projectEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+// Astro.params.slug가 배열로 들어오므로 문자열로 변환
+const slugPath = Array.isArray(Astro.params.slug) 
+  ? Astro.params.slug.join('/') 
+  : Astro.params.slug;
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const project: ProjectSchema = entry.data;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={project.title} description={project.description}>
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <article>
+      <!-- Project Header -->
+      <header class="mb-8">
+        <h1 class="text-sm font-bold mb-4 terminal-header">{project.title}</h1>
+        
+        <div class="flex flex-wrap gap-4 mb-4 text-sm text-gray-600">
+          <div>
+            {project.pubDate.toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric' 
+            })}
+          </div>
+          
+          {project.category && (
+            <div>
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                {project.category}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <p class="text-sm text-gray-600 mb-6 leading-relaxed">{project.description}</p>
+
+        <!-- Tags -->
+        {project.tags && project.tags.length > 0 && (
+          <div class="flex flex-wrap gap-3 mb-6">
+            {project.tags.map((tag) => (
+              <span class="text-sm text-gray-400">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <!-- PDF & Links -->
+        {(project.pdfFile || project.github || project.demo) && (
+          <div class="flex gap-4 mb-6">
+            {project.github && (
+              <a 
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
+                </svg>
+                GitHub
+              </a>
+            )}
+            {project.demo && (
+              <a 
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Live Demo
+              </a>
+            )}
+          </div>
+        )}
+      </header>
+
+      <!-- Hero Image -->
+      {project.heroImage && (
+        <div class="mb-8">
+          <img src={project.heroImage} alt={project.title} class="w-full rounded-lg" />
+        </div>
+      )}
+
+      <!-- Project Content -->
+      <div class="prose max-w-none terminal-text">
+        <Content />
+      </div>
+
+      <!-- PDF Viewer with Thumbnail Navigation -->
+      {project.pdfFile && (
+        <div class="mt-8">
+          <h2 class="text-lg font-semibold mb-4">상세 보고서</h2>
+          
+          <!-- Main PDF Viewer -->
+          <div class="pdf-viewer-container border rounded-lg bg-gray-50 p-4">
+            <!-- Status Bar -->
+            <div class="flex justify-between items-center mb-4">
+              <div class="text-sm text-gray-600">
+                <span id="current-page">1</span> / <span id="total-pages">-</span> 페이지
+              </div>
+              <div class="flex gap-2">
+                <button id="zoom-out" class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                  -
+                </button>
+                <button id="zoom-in" class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                  +
+                </button>
+                <button id="fullscreen-btn" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+                  전체화면
+                </button>
+              </div>
+            </div>
+            
+            <!-- Main Canvas -->
+            <div class="pdf-canvas-container bg-white rounded border shadow-inner" style="height: 700px;">
+              <canvas id="pdf-canvas" class="mx-auto block cursor-grab"></canvas>
+            </div>
+          </div>
+          
+          <!-- Navigation Controls Below PDF -->
+          <div class="flex justify-center items-center gap-4 mt-4">
+            <button id="prev-page" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400">
+              ← 이전 페이지
+            </button>
+            <div class="text-lg font-medium text-gray-700">
+              <span id="current-page-display">1</span> / <span id="total-pages-display">-</span>
+            </div>
+            <button id="next-page" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400">
+              다음 페이지 →
+            </button>
+          </div>
+          
+          <!-- Thumbnail Strip -->
+          <div class="mt-6">
+            <div class="text-sm font-medium text-gray-700 mb-3">페이지 미리보기</div>
+            <div id="thumbnail-strip" class="flex gap-2 overflow-x-auto pb-2">
+              <!-- 썸네일이 여기에 동적으로 생성됨 -->
+            </div>
+          </div>
+          
+          <!-- Fallback -->
+          <div class="mt-4 text-center">
+            <p class="text-sm text-gray-500">
+              PDF 뷰어가 작동하지 않는 경우 
+              <a href={project.pdfFile} target="_blank" class="text-blue-600 hover:underline">
+                여기를 클릭하여 다운로드
+              </a>
+              하세요.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <!-- Back to Projects -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <a 
+          href="/projects" 
+          class="inline-flex items-center text-gray-700 hover:text-gray-900"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          모든 프로젝트 보기
+        </a>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  a {
+    color: #374151;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: #111827;
+  }
+
+  /* Prose 스타일링 */
+  .prose {
+    line-height: 1.6;
+    font-size: 0.875rem;
+    text-align: left !important;
+    text-justify: none !important;
+  }
+
+  /* 모든 텍스트 요소에 한국어 단어 분리 방지 전역 적용 */
+  .prose *,
+  .prose p,
+  .prose div,
+  .prose span {
+    word-break: keep-all;
+    line-break: anywhere;
+    text-align: left !important;
+    text-justify: none !important;
+  }
+
+  /* 헤더 스타일 */
+  article .prose h1,
+  article .prose h2, 
+  article .prose h3, 
+  article .prose h4, 
+  article .prose h5, 
+  article .prose h6 {
+    color: #111827 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+    word-break: keep-all;
+    line-break: anywhere;
+  }
+
+  article .prose h1 {
+    font-weight: 800 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    padding-bottom: 0.5rem !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  article .prose h2 {
+    font-weight: 700 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  article .prose h3 {
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important;
+  }
+
+  .prose p {
+    margin-bottom: 1rem;
+    color: #374151;
+    font-size: 0.875rem;
+    word-break: keep-all;
+    line-break: anywhere;
+    text-align: left !important;
+    text-justify: none !important;
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: 1rem;
+    padding-left: 2.5rem;
+    font-size: 0.875rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+    color: #374151;
+    word-break: keep-all;
+    line-break: anywhere;
+  }
+
+  .prose code {
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    border: 1px solid #4a5568;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+
+  /* 코드 블록 스타일 - 강제 적용 */
+  .prose pre,
+  article pre,
+  .content pre {
+    background-color: #1a202c !important;  /* 원래 짙은 회색으로 복원 */
+    color: #e2e8f0 !important;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: none !important;  /* 테두리 제거 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  
+  /* 코드 블록 내부 텍스트 배경색 및 외곽선 제거 */
+  .prose pre code,
+  .prose pre code *,
+  .prose pre span,
+  .prose pre span *,
+  .prose pre .token,
+  .prose pre .keyword,
+  .prose pre .string,
+  .prose pre .comment,
+  .prose pre .number,
+  .prose pre .operator,
+  .prose pre .punctuation,
+  .prose pre .function,
+  .prose pre .class-name {
+    background-color: transparent !important;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
+  }
+
+  /* 이미지 스타일링 */
+  .prose img {
+    width: 70%;
+    max-width: 70%;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+    border-radius: 0.5rem;
+  }
+
+  /* 이미지 캡션 스타일 */
+  .prose img + em {
+    display: block;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  /* PDF Viewer Styles */
+  .pdf-viewer-container {
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  
+  #pdf-canvas {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    /* 한글 폰트 렌더링 개선 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  #pdf-canvas.dragging {
+    cursor: grabbing;
+  }
+  
+  .pdf-canvas-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  /* Thumbnail Styles */
+  .thumbnail {
+    width: 120px;
+    height: 80px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  
+  .thumbnail:hover {
+    border-color: #3b82f6;
+    transform: scale(1.05);
+  }
+  
+  .thumbnail.active {
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.2);
+  }
+  
+  /* Fullscreen Styles */
+  .fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fullscreen-content {
+    position: relative;
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .fullscreen-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10000;
+  }
+  
+  .fullscreen-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .fullscreen-nav:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .fullscreen-nav.prev {
+    left: 20px;
+  }
+  
+  .fullscreen-nav.next {
+    right: 20px;
+  }
+  
+  /* Progress Bar - PDF 하단에 올바르게 위치 */
+  .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: #3b82f6;
+    transition: width 0.3s ease;
+    border-radius: 0 0 8px 0;
+    z-index: 10;
+  }
+  
+  /* Image Lightbox Styles */
+  .image-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .image-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .image-lightbox img {
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    cursor: default;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+  }
+  
+  .image-lightbox.active img {
+    transform: scale(1);
+  }
+  
+  .image-lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .image-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+  
+  .image-lightbox-info {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    font-size: 14px;
+    max-width: 80vw;
+  }
+  
+  /* Clickable images cursor */
+  .prose img {
+    cursor: zoom-in;
+    transition: all 0.2s ease;
+  }
+  
+  .prose img:hover {
+    filter: brightness(1.05);
+    transform: scale(1.02);
+  }
+</style>
+
+<!-- PDF.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" is:inline></script>
+<script is:inline define:vars={{ pdfFile: project.pdfFile }}>
+  if (pdfFile && typeof pdfjsLib !== 'undefined') {
+    // PDF.js 설정 (한글 지원 강화)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    
+    // 한글 폰트를 위한 추가 설정
+    if (typeof pdfjsLib.getDocument !== 'undefined') {
+      // CMap 설정으로 한중일 문자 지원
+      pdfjsLib.cMapUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/';
+      pdfjsLib.cMapPacked = true;
+    }
+    
+    let pdfDoc = null;
+    let currentPage = 1;
+    let scale = 1.0;
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+    let isFullscreen = false;
+    
+    // 버튼 요소들
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const currentPageSpan = document.getElementById('current-page');
+    const totalPagesSpan = document.getElementById('total-pages');
+    const currentPageDisplay = document.getElementById('current-page-display');
+    const totalPagesDisplay = document.getElementById('total-pages-display');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const thumbnailStrip = document.getElementById('thumbnail-strip');
+    
+    // PDF 로드 함수
+    async function loadPDF() {
+      try {
+        console.log('PDF 로딩 시작:', pdfFile);
+        
+        // PDF.js 로딩 옵션 설정
+        const loadingTask = pdfjsLib.getDocument({
+          url: pdfFile,
+          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+          cMapPacked: true,
+          disableWorker: false,
+          verbosity: 0, // 에러 로깅 줄이기
+          // 한글 폰트 지원을 위한 설정
+          useSystemFonts: true,
+          disableFontFace: false,
+          fontExtraProperties: true,
+          // 추가 한글 지원 옵션
+          standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/',
+          enableXfa: true
+        });
+        
+        pdfDoc = await loadingTask.promise;
+        console.log('PDF 로딩 성공, 총 페이지:', pdfDoc.numPages);
+        
+        totalPagesSpan.textContent = pdfDoc.numPages;
+        totalPagesDisplay.textContent = pdfDoc.numPages;
+        await renderPage(currentPage);
+        await generateThumbnails();
+        updateButtons();
+        updateProgressBar();
+      } catch (error) {
+        console.error('PDF 로드 실패 상세:', error);
+        handlePDFError(error);
+      }
+    }
+    
+    // 에러 처리
+    function handlePDFError(error) {
+      canvas.style.display = 'none';
+      
+      let errorMessage = 'PDF를 로드할 수 없습니다.';
+      let errorDetail = '파일이 손상되었거나 지원되지 않는 형식일 수 있습니다.';
+      
+      if (error) {
+        console.log('Error details:', error.name, error.message);
+        
+        if (error.name === 'MissingPDFException') {
+          errorDetail = 'PDF 파일을 찾을 수 없습니다.';
+        } else if (error.name === 'InvalidPDFException') {
+          errorDetail = '잘못된 PDF 파일 형식입니다.';
+        } else if (error.name === 'UnexpectedResponseException') {
+          errorDetail = '네트워크 오류가 발생했습니다.';
+        }
+      }
+      
+      document.querySelector('.pdf-viewer-container').innerHTML = `
+        <div class="text-center py-12">
+          <div class="text-red-600 text-lg font-semibold mb-2">${errorMessage}</div>
+          <p class="text-gray-600 mb-4">${errorDetail}</p>
+        </div>
+      `;
+    }
+    
+    // 썸네일 생성
+    async function generateThumbnails() {
+      thumbnailStrip.innerHTML = '';
+      
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const thumbnailCanvas = document.createElement('canvas');
+        const thumbnailCtx = thumbnailCanvas.getContext('2d');
+        
+        try {
+          const page = await pdfDoc.getPage(i);
+          const viewport = page.getViewport({ scale: 0.2 });
+          
+          thumbnailCanvas.width = viewport.width;
+          thumbnailCanvas.height = viewport.height;
+          thumbnailCanvas.className = 'thumbnail';
+          
+          if (i === currentPage) {
+            thumbnailCanvas.classList.add('active');
+          }
+          
+          await page.render({
+            canvasContext: thumbnailCtx,
+            viewport: viewport,
+            // 한글 텍스트 렌더링을 위한 옵션
+            textContent: true,
+            imageLayer: true
+          }).promise;
+          
+          // 썸네일 클릭 이벤트
+          thumbnailCanvas.addEventListener('click', () => {
+            currentPage = i;
+            renderPage(currentPage);
+            updateThumbnailSelection();
+            updateButtons();
+            updateProgressBar();
+          });
+          
+          thumbnailStrip.appendChild(thumbnailCanvas);
+        } catch (error) {
+          console.error(`썸네일 ${i} 생성 실패:`, error);
+        }
+      }
+    }
+    
+    // 썸네일 선택 업데이트
+    function updateThumbnailSelection() {
+      const thumbnails = thumbnailStrip.querySelectorAll('.thumbnail');
+      thumbnails.forEach((thumb, index) => {
+        if (index + 1 === currentPage) {
+          thumb.classList.add('active');
+        } else {
+          thumb.classList.remove('active');
+        }
+      });
+      
+      // 선택된 썸네일이 보이도록 스크롤 (개선된 버전)
+      const activeThumbnail = thumbnails[currentPage - 1];
+      if (activeThumbnail) {
+        // 썸네일 영역만 스크롤되도록 개선
+        const thumbnailStrip = document.getElementById('thumbnail-strip');
+        const thumbnailRect = activeThumbnail.getBoundingClientRect();
+        const stripRect = thumbnailStrip.getBoundingClientRect();
+        
+        // 썸네일이 보이는 영역에 있는지 확인
+        const isVisible = thumbnailRect.left >= stripRect.left && 
+                         thumbnailRect.right <= stripRect.right;
+        
+        // 보이지 않으면 스크롤
+        if (!isVisible) {
+          activeThumbnail.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest', 
+            inline: 'center' 
+          });
+        }
+      }
+    }
+    
+    // 진행 바 업데이트 (올바른 위치로 이동)
+    function updateProgressBar() {
+      const progress = (currentPage / pdfDoc.numPages) * 100;
+      let progressBar = document.querySelector('.progress-bar');
+      if (!progressBar) {
+        progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        // PDF 캔버스 컨테이너 하단에 배치
+        const canvasContainer = document.querySelector('.pdf-canvas-container');
+        canvasContainer.style.position = 'relative';
+        canvasContainer.appendChild(progressBar);
+      }
+      progressBar.style.width = `${progress}%`;
+    }
+    
+    // 페이지 렌더링 함수
+    async function renderPage(pageNumber) {
+      try {
+        const page = await pdfDoc.getPage(pageNumber);
+        const viewport = page.getViewport({ scale });
+        
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        // 컨테이너 크기에 맞게 자동 스케일
+        const container = document.querySelector('.pdf-canvas-container');
+        const containerWidth = container.clientWidth - 32;
+        const containerHeight = container.clientHeight - 32;
+        
+        if (viewport.width > containerWidth || viewport.height > containerHeight) {
+          const scaleX = containerWidth / viewport.width;
+          const scaleY = containerHeight / viewport.height;
+          const autoScale = Math.min(scaleX, scaleY) * scale;
+          
+          const scaledViewport = page.getViewport({ scale: autoScale });
+          canvas.width = scaledViewport.width;
+          canvas.height = scaledViewport.height;
+          
+          await page.render({
+            canvasContext: ctx,
+            viewport: scaledViewport,
+            // 한글 텍스트 렌더링을 위한 옵션
+            textContent: true,
+            imageLayer: true
+          }).promise;
+        } else {
+          await page.render({
+            canvasContext: ctx,
+            viewport: viewport,
+            // 한글 텍스트 렌더링을 위한 옵션
+            textContent: true,
+            imageLayer: true
+          }).promise;
+        }
+        
+        currentPageSpan.textContent = currentPage;
+        currentPageDisplay.textContent = currentPage;
+        updateThumbnailSelection();
+        updateProgressBar();
+      } catch (error) {
+        console.error('페이지 렌더링 실패:', error);
+      }
+    }
+    
+    // 전체화면 모드
+    function toggleFullscreen() {
+      if (!isFullscreen) {
+        enterFullscreen();
+      } else {
+        exitFullscreen();
+      }
+    }
+    
+    function enterFullscreen() {
+      const overlay = document.createElement('div');
+      overlay.className = 'fullscreen-overlay';
+      overlay.id = 'fullscreen-overlay';
+      
+      const content = document.createElement('div');
+      content.className = 'fullscreen-content';
+      
+      const fullscreenCanvas = document.createElement('canvas');
+      fullscreenCanvas.id = 'fullscreen-canvas';
+      
+      const controls = document.createElement('div');
+      controls.className = 'fullscreen-controls';
+      controls.innerHTML = `
+        <button id="fs-prev" class="fullscreen-nav prev">←</button>
+        <button id="fs-next" class="fullscreen-nav next">→</button>
+        <button id="fs-close" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">닫기</button>
+      `;
+      
+      content.appendChild(fullscreenCanvas);
+      content.appendChild(controls);
+      overlay.appendChild(content);
+      document.body.appendChild(overlay);
+      
+      isFullscreen = true;
+      fullscreenBtn.textContent = '나가기';
+      
+      // 전체화면에서 렌더링
+      renderFullscreenPage(currentPage, fullscreenCanvas);
+      
+      // 이벤트 리스너
+      document.getElementById('fs-prev').addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderFullscreenPage(currentPage, fullscreenCanvas);
+          renderPage(currentPage); // 메인 캔버스도 업데이트
+          updateButtons();
+        }
+      });
+      
+      document.getElementById('fs-next').addEventListener('click', () => {
+        if (currentPage < pdfDoc.numPages) {
+          currentPage++;
+          renderFullscreenPage(currentPage, fullscreenCanvas);
+          renderPage(currentPage); // 메인 캔버스도 업데이트
+          updateButtons();
+        }
+      });
+      
+      document.getElementById('fs-close').addEventListener('click', exitFullscreen);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) exitFullscreen();
+      });
+    }
+    
+    function exitFullscreen() {
+      const overlay = document.getElementById('fullscreen-overlay');
+      if (overlay) {
+        overlay.remove();
+      }
+      isFullscreen = false;
+      fullscreenBtn.textContent = '전체화면';
+    }
+    
+    async function renderFullscreenPage(pageNumber, canvas) {
+      try {
+        const page = await pdfDoc.getPage(pageNumber);
+        const ctx = canvas.getContext('2d');
+        
+        // 전체화면에 맞는 최대 크기로 스케일
+        const maxWidth = window.innerWidth * 0.9;
+        const maxHeight = window.innerHeight * 0.9;
+        
+        const viewport = page.getViewport({ scale: 1.0 });
+        const scaleX = maxWidth / viewport.width;
+        const scaleY = maxHeight / viewport.height;
+        const optimalScale = Math.min(scaleX, scaleY);
+        
+        const scaledViewport = page.getViewport({ scale: optimalScale });
+        
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        
+        await page.render({
+          canvasContext: ctx,
+          viewport: scaledViewport,
+          // 한글 텍스트 렌더링을 위한 옵션
+          textContent: true,
+          imageLayer: true
+        }).promise;
+      } catch (error) {
+        console.error('전체화면 렌더링 실패:', error);
+      }
+    }
+    
+    // 버튼 상태 업데이트
+    function updateButtons() {
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= pdfDoc.numPages;
+    }
+    
+    // 이벤트 리스너들
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage(currentPage);
+        updateButtons();
+      }
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < pdfDoc.numPages) {
+        currentPage++;
+        renderPage(currentPage);
+        updateButtons();
+      }
+    });
+    
+    zoomInBtn.addEventListener('click', () => {
+      scale += 0.25;
+      renderPage(currentPage);
+    });
+    
+    zoomOutBtn.addEventListener('click', () => {
+      if (scale > 0.5) {
+        scale -= 0.25;
+        renderPage(currentPage);
+      }
+    });
+    
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    // 키보드 네비게이션
+    document.addEventListener('keydown', (e) => {
+      if (isFullscreen || e.target.closest('.pdf-viewer-container')) {
+        switch(e.key) {
+          case 'ArrowLeft':
+            if (currentPage > 1) {
+              currentPage--;
+              renderPage(currentPage);
+              updateButtons();
+            }
+            break;
+          case 'ArrowRight':
+            if (currentPage < pdfDoc.numPages) {
+              currentPage++;
+              renderPage(currentPage);
+              updateButtons();
+            }
+            break;
+          case 'Escape':
+            if (isFullscreen) exitFullscreen();
+            break;
+          case 'f':
+          case 'F':
+            toggleFullscreen();
+            break;
+        }
+      }
+    });
+    
+    // 마우스 휠 줌
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        scale += 0.1;
+        renderPage(currentPage);
+      } else {
+        if (scale > 0.3) {
+          scale -= 0.1;
+          renderPage(currentPage);
+        }
+      }
+    });
+    
+    // 드래그 기능 (팬 스크롤)
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let canvasStart = { x: 0, y: 0 };
+    
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      canvas.classList.add('dragging');
+      dragStart.x = e.clientX;
+      dragStart.y = e.clientY;
+      canvasStart.x = canvas.offsetLeft;
+      canvasStart.y = canvas.offsetTop;
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+      
+      // 여기서 팬 스크롤 로직을 구현할 수 있습니다
+    });
+    
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      canvas.classList.remove('dragging');
+    });
+    
+    // PDF 로드 시작
+    loadPDF();
+  }
+  
+  // Astro View Transitions 대응 (개선된 버전)
+  document.addEventListener('astro:page-load', () => {
+    console.log('Astro page load event triggered'); // 디버그용
+    
+    // PDF 파일이 있는 경우에만 재초기화
+    if (pdfFile && typeof pdfjsLib !== 'undefined') {
+      // 기존 PDF 뷰어 요소들이 있는지 확인
+      const existingCanvas = document.getElementById('pdf-canvas');
+      const existingContainer = document.querySelector('.pdf-viewer-container');
+      
+      if (existingCanvas && existingContainer) {
+        console.log('PDF canvas found, reinitializing...'); // 디버그용
+        
+        // 변수 완전 재설정
+        pdfDoc = null;
+        currentPage = 1;
+        scale = 1.0;
+        isFullscreen = false;
+        
+        // 기존 진행 바 제거
+        const existingProgressBar = document.querySelector('.progress-bar');
+        if (existingProgressBar) {
+          existingProgressBar.remove();
+        }
+        
+        // 전체화면 닫기 (있다면)
+        const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+        if (fullscreenOverlay) {
+          fullscreenOverlay.remove();
+        }
+        
+        // PDF 초기화 재실행 (지연시간 늘림)
+        setTimeout(() => {
+          console.log('Starting PDF reload...'); // 디버그용
+          loadPDF();
+        }, 200); // 지연 시간 늘림
+      }
+    }
+    
+    // 이미지 라이트박스도 재초기화
+    if (typeof initImageLightbox === 'function') {
+      // 기존 라이트박스 제거
+      const existingLightbox = document.querySelector('.image-lightbox');
+      if (existingLightbox) {
+        existingLightbox.remove();
+      }
+      
+      setTimeout(() => {
+        initImageLightbox();
+      }, 100);
+    }
+  });
+  
+  // Image Lightbox 기능
+  function initImageLightbox() {
+    // 라이트박스 엘리먼트 생성
+    const lightbox = document.createElement('div');
+    lightbox.className = 'image-lightbox';
+    lightbox.innerHTML = `
+      <div class="image-lightbox-close">×</div>
+      <img src="" alt="" />
+      <div class="image-lightbox-info"></div>
+    `;
+    document.body.appendChild(lightbox);
+    
+    const lightboxImg = lightbox.querySelector('img');
+    const lightboxInfo = lightbox.querySelector('.image-lightbox-info');
+    const closeBtn = lightbox.querySelector('.image-lightbox-close');
+    
+    // 모든 prose 이미지에 클릭 이벤트 추가
+    const proseImages = document.querySelectorAll('.prose img');
+    proseImages.forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // 이미지 정보 설정
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        
+        // alt 텍스트가 있으면 정보로 표시
+        if (img.alt && img.alt.trim()) {
+          lightboxInfo.textContent = img.alt;
+          lightboxInfo.style.display = 'block';
+        } else {
+          lightboxInfo.style.display = 'none';
+        }
+        
+        // 라이트박스 표시
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    // 라이트박스 닫기 이벤트
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // 닫기 버튼 클릭
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+    
+    // 배경 클릭으로 닫기
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+    
+    // ESC 키로 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+    
+    // 이미지 클릭 시 닫기 방지
+    lightboxImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+  
+  // DOM 로드 완료 후 이미지 라이트박스 초기화
+  document.addEventListener('DOMContentLoaded', initImageLightbox);
+</script>

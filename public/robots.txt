@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://astrofy-template.netlify.app/sitemap-index.xml
+# 실제 배포 URL로 변경 필요
+# 예: Sitemap: https://seunghoc.com/sitemap-index.xml
+Sitemap: https://[YOUR-DOMAIN]/sitemap-index.xml

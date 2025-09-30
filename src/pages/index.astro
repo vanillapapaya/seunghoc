@@ -1,78 +1,170 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
 import createSlug from "../lib/createSlug"
 
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const recentPosts = posts.slice(0, 5);
 
-const last_posts = posts.slice(0, 3);
+const projects = (await getCollection("projects")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const featuredProjects = projects.slice(0, 3);
 ---
 
 <BaseLayout sideBarActiveItemID="home">
-  <div class="pb-12 mt-5">
-    <div class="text-xl py-1">Hey there 👋</div>
-    <div class="text-5xl font-bold">I'm Manuel Ernesto</div>
-    <div class="text-3xl py-3 font-bold">Software Engineer and Entrepreneur</div>
-    <div class="py-2">
-      <text class="text-lg">
-        This is <b>Astrofy</b> a free and open-source template for your Personal Portfolio Website built with Astro and TailwindCSS.
-        Create in minutes a website with Blog, CV, Project Section, Store and RSS Feed. I hope you find
-        it useful!
-      </text>
+  <div class="max-w-7xl mx-auto px-8 py-8">
+    
+    <!-- Hero Section -->
+    <div class="mb-10">
+      <h1 class="text-sm font-bold mb-2">채승호 (Seungho Chae)</h1>
+      <h2 class="text-sm text-gray-600 mb-4">Game Data Analyst & Strategy Consultant</h2>
+      
+      <p class="text-sm text-gray-700 mb-4">
+        데이터로 게임의 숨은 가치를 발견하고, 실행 가능한 전략으로 매출을 증대시킵니다.
+      </p>
+      
+      <div class="flex flex-wrap gap-3 mb-6 text-sm text-gray-600">
+        <span>• 게임 운영 데이터 분석 및 KPI 설계</span>
+        <span>• 신규 게임 시장 진입 전략 수립</span>
+        <span>• 수익화 모델 최적화</span>
+        <span>• 게임 디자인 & UX 분석</span>
+      </div>
+      
+      <div class="flex gap-4">
+        <a href="/services" class="text-sm px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+          서비스 보기
+        </a>
+        <a href="mailto:seunghoc94@gmail.com" class="text-sm px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+          프로젝트 문의
+        </a>
+      </div>
     </div>
-    <div class="mt-8">
-      <a class="btn" href="https://twitter.com/manuelernestog" target="_blank"> Let's connect!</a>
-      <a href="https://github.com/manuelernestog/astrofy" target="_blank" class="btn btn-outline ml-5">
-        Get This template
-      </a>
+
+    <div class="border-t border-gray-200 my-8"></div>
+
+    <!-- Home Section with Photo -->
+    <div class="mb-10">
+      <h2 class="text-sm font-bold mb-4">Home</h2>
+      
+      <div class="grid md:grid-cols-3 gap-8 items-start">
+        <!-- Left: Photo (1/3 width) -->
+        <div class="md:col-span-1">
+          <div class="bg-gray-100 rounded-lg overflow-hidden">
+            <img 
+              src="/profile.png" 
+              alt="채승호 프로필 사진" 
+              class="w-full object-cover transition-all duration-300"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <!-- 이미지가 없을 때 표시될 플레이스홀더 -->
+            <div class="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500" style="display: none;">
+              <div class="text-center">
+                <div class="text-4xl mb-2">👤</div>
+                <div class="text-sm">Profile Photo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Text Content (2/3 width) -->
+        <div class="md:col-span-2">
+          <div class="text-sm text-gray-700 space-y-4">
+            <p>
+              5년간 게임 업계에서 데이터와 게임 본질을 통합적으로 분석하는 전문성을 쌓아왔습니다. 
+              <strong>넷마블 몬스터</strong>에서 마블 퓨처 파이트, 마블 퓨처 레볼루션 등을, 
+              <strong>스마일게이트 엔터테인먼트</strong>에서 크로스파이어, CFHD, 에픽세븐 등 
+              다양한 장르의 게임 데이터를 분석했습니다.
+            </p>
+            
+            <p>
+              단순히 수치적 변화를 추적하는 것을 넘어, 플레이어의 실제 경험과 게임의 근본적 재미 요소를 
+              파악하는 분석을 수행합니다. Python, SQL, R을 활용한 통계 분석부터 
+              PowerBI와 Tableau를 통한 실시간 대시보드 구축까지, 게임 운영진이 필요로 하는 
+              다양한 레벨의 인사이트를 제공합니다.
+            </p>
+            
+            <p>
+              시계열 분석과 상관성 분석을 통해 게임 업데이트와 이벤트의 효과를 측정하고, 
+              Unreal Engine 5 기반 3D 게임 공간 분석 연구를 통해 맵 제작 비용을 절감하는 
+              방안을 도출했습니다. 게임을 단순한 상품이 아닌 문화적 매체로 이해하며, 
+              플레이어에게 의미 있는 경험을 전달하는 데이터 기반 전략을 수립합니다.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="border-t border-gray-200 my-8"></div>
+
+    <!-- Featured Projects -->
+    <div class="mb-10">
+      <h2 class="text-sm font-bold mb-4">Featured Projects</h2>
+      
+      <div class="space-y-4">
+        {featuredProjects.map((project) => (
+          <div class="py-3 border-b border-gray-200">
+            <h3 class="text-sm font-semibold mb-1">
+              <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                {project.data.title}
+              </a>
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">
+              {project.data.description}
+            </p>
+            {project.data.tags && (
+              <div class="flex flex-wrap gap-2">
+                {project.data.tags.map((tag) => (
+                  <span class="text-xs text-gray-400">#{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      <div class="mt-4">
+        <a href="/projects" class="text-sm text-blue-600 hover:underline">
+          모든 프로젝트 보기 →
+        </a>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200 my-8"></div>
+
+    <!-- Recent Blog Posts -->
+    <div class="mb-10">
+      <h2 class="text-sm font-bold mb-4">Latest Insights</h2>
+      
+      <div class="space-y-4">
+        {recentPosts.map((post) => (
+          <div class="py-3 border-b border-gray-200">
+            <h3 class="text-sm font-semibold mb-1">
+              <a href={`/blog/${createSlug(post.data.title, post.slug)}`} class="text-gray-700 hover:text-gray-900">
+                {post.data.title}
+              </a>
+            </h3>
+            <p class="text-sm text-gray-600">
+              {post.data.description}
+            </p>
+          </div>
+        ))}
+      </div>
+      
+      <div class="mt-4">
+        <a href="/blog" class="text-sm text-blue-600 hover:underline">
+          모든 글 보기 →
+        </a>
+      </div>
+    </div>
+
   </div>
-
-  <div>
-    <div class="text-3xl w-full font-bold mb-2">My last projects {"</>"}</div>
-  </div>
-
-  <HorizontalCard
-    title="Demo Project 1"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="NEW"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 2"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 3"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="FOSS"
-  />
-
-  <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">Latest from blog</div>
-  </div>
-
-  {
-    last_posts.map((post) => (
-      <>
-        <HorizontalCard
-          title={post.data.title}
-          img={post.data.heroImage}
-          desc={post.data.description}
-          url={"/blog/" + createSlug(post.data.title, post.slug)}
-          target="_self"
-          badge={post.data.badge}
-        />
-        <div class="divider my-0" />
-      </>
-    ))
-  }
 </BaseLayout>
+
+<style>
+  a {
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+</style>

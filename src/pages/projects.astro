@@ -1,51 +1,113 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 카테고리별로 프로젝트 분류
+const categories = {
+  "Data Analysis Projects": projects.filter(p => p.data.category === "Data Analysis Projects"),
+  "Game Analytics Projects": projects.filter(p => p.data.category === "Game Analytics Projects"),
+  "Data Visualization Projects": projects.filter(p => p.data.category === "Data Visualization Projects"),
+};
 ---
 
-<BaseLayout title = "Projects" sideBarActiveItemID="projects">
-  <div>
-    <div class="text-3xl w-full font-bold mb-5">Projects Header</div>
+<BaseLayout title="Projects" sideBarActiveItemID="projects">
+  <div class="max-w-7xl mx-auto px-8 py-8">
+    
+    <h1 class="text-sm font-bold mb-6">Projects</h1>
+    
+    <!-- Data Analysis Projects -->
+    {categories["Data Analysis Projects"].length > 0 && (
+      <div class="mb-6">
+        <h2 class="text-sm font-bold mb-3">[Data Analysis Projects]</h2>
+        
+        <div class="space-y-4">
+          {categories["Data Analysis Projects"].map((project) => (
+            <div class="py-3 border-b border-gray-200">
+              <h3 class="text-sm font-semibold mb-1">
+                <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                  {project.data.title}
+                </a>
+              </h3>
+              <p class="text-sm text-gray-600 mb-1">
+                {project.data.description}
+              </p>
+              <div class="flex flex-wrap gap-3">
+                {project.data.tags && project.data.tags.map((tag) => (
+                  <span class="text-sm text-gray-400">#{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Game Analytics Projects -->
+    {categories["Game Analytics Projects"].length > 0 && (
+      <div class="mb-6">
+        <h2 class="text-sm font-bold mb-3">[Game Analytics Projects]</h2>
+        
+        <div class="space-y-4">
+          {categories["Game Analytics Projects"].map((project) => (
+            <div class="py-3 border-b border-gray-200">
+              <h3 class="text-sm font-semibold mb-1">
+                <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                  {project.data.title}
+                </a>
+              </h3>
+              <p class="text-sm text-gray-600 mb-1">
+                {project.data.description}
+              </p>
+              <div class="flex flex-wrap gap-3">
+                {project.data.tags && project.data.tags.map((tag) => (
+                  <span class="text-sm text-gray-400">#{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Data Visualization Projects -->
+    {categories["Data Visualization Projects"].length > 0 && (
+      <div class="mb-6">
+        <h2 class="text-sm font-bold mb-3">[Data Visualization Projects]</h2>
+        
+        <div class="space-y-4">
+          {categories["Data Visualization Projects"].map((project) => (
+            <div class="py-3 border-b border-gray-200">
+              <h3 class="text-sm font-semibold mb-1">
+                <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                  {project.data.title}
+                </a>
+              </h3>
+              <p class="text-sm text-gray-600 mb-1">
+                {project.data.description}
+              </p>
+              <div class="flex flex-wrap gap-3">
+                {project.data.tags && project.data.tags.map((tag) => (
+                  <span class="text-sm text-gray-400">#{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
-
-  <HorizontalCard
-    title="Demo Project 1"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="NEW"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 2"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
-
-  <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">Projects Header</div>
-  </div>
-
-  <HorizontalCard
-    title="Demo Project 3"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="FOSS"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 4"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 5"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-  />
 </BaseLayout>
+
+<style>
+  a {
+    color: #374151;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: #111827;
+  }
+</style>
