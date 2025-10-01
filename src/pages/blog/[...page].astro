@@ -14,18 +14,44 @@ const { page } = Astro.props;
 // Badge 색상 얻기 함수
 function getBadgeColor(post) {
   if (post.data.color) {
-    // MD 파일에서 직접 지정한 색상 사용
-    return post.data.color;
+    // color 값에서 텍스트 색상만 추출
+    const match = post.data.color.match(/text-(\S+)/);
+    return match ? match[1] : 'gray-500';
   }
-  // 기본값
-  return 'bg-gray-100 text-gray-800';
+  return 'gray-500';
 }
+
+// 모든 카테고리(badge) 추출
+const allBadges = [...new Set(page.data.map(post => post.data.badge).filter(Boolean))].sort();
 ---
 
 <BaseLayout title="Posts" sideBarActiveItemID="blog">
   <div class="max-w-7xl mx-auto px-8 py-8">
     
-    <h1 class="text-sm font-bold mb-3">Posts</h1>
+    <h1 class="text-sm font-bold mb-6">Posts</h1>
+    
+    <!-- Category Filter Badges -->
+    {allBadges.length > 0 && (
+      <div class="mb-6">
+        <div class="flex flex-wrap gap-2">
+          <button 
+            class="category-filter-btn active text-xs px-3 py-1 transition-colors cursor-pointer"
+            data-category="all"
+          >
+            All
+          </button>
+          {allBadges.map((badge) => (
+            <button 
+              class="category-filter-btn text-xs px-3 py-1 transition-colors cursor-pointer"
+              data-category={badge}
+              data-badge-name={badge}
+            >
+              {badge}
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
     
     {
       page.data.length === 0 ? (
@@ -34,9 +60,12 @@ function getBadgeColor(post) {
           <p class="text-yellow-700">There are no blog posts to show at the moment. Check back later!</p>
         </div>
       ) : (
-        <div class="space-y-4">
+        <div class="space-y-4" id="posts-container">
           {page.data.map((post) => (
-            <article class="py-3 border-b border-gray-200">
+            <article 
+              class="post-item py-3 border-b border-gray-200" 
+              data-category={post.data.badge || 'uncategorized'}
+            >
               <h2 class="text-sm font-semibold mb-1">
                 <a 
                   href={"/blog/" + createSlug(post.data.title, post.slug)}
@@ -55,7 +84,7 @@ function getBadgeColor(post) {
                   })}
                 </time>
                 {post.data.badge && (
-                  <span class={`px-2 py-1 rounded-full text-xs font-medium ${getBadgeColor(post)}`}>
+                  <span class={`text-xs text-${getBadgeColor(post)}`}>
                     {post.data.badge}
                   </span>
                 )}
@@ -68,7 +97,7 @@ function getBadgeColor(post) {
               {post.data.tags && post.data.tags.length > 0 && (
                 <div class="flex flex-wrap gap-3">
                   {post.data.tags.map((tag) => (
-                    <span class="text-sm text-gray-400">
+                    <span class="text-xs text-gray-500">
                       #{tag}
                     </span>
                   ))}
@@ -79,6 +108,11 @@ function getBadgeColor(post) {
         </div>
       )
     }
+
+    <!-- No results message (hidden by default) -->
+    <div id="no-results" class="hidden py-6 border-b border-gray-200">
+      <p class="text-sm text-gray-600">해당 카테고리의 게시글이 없습니다.</p>
+    </div>
 
     <!-- Pagination -->
     {(page.url.prev || page.url.next) && (
@@ -138,4 +172,105 @@ function getBadgeColor(post) {
     text-decoration: underline;
     color: #111827;
   }
+
+  /* Category filter button styles */
+  .category-filter-btn {
+    background-color: #f3f4f6;
+    color: #111827;
+    border: none;
+  }
+
+  .category-filter-btn:hover {
+    opacity: 0.8;
+  }
+
+  .category-filter-btn.active {
+    background-color: #d1d5db;
+    color: #111827;
+  }
+
+  /* Category specific colors - Pastel tones */
+  .category-filter-btn[data-badge-name="게임 플레이 공유"] {
+    background-color: #bae6fd;
+    color: #0c4a6e;
+  }
+
+  .category-filter-btn[data-badge-name="게임 플레이 공유"].active {
+    background-color: #7dd3fc;
+    color: #0c4a6e;
+  }
+
+  .category-filter-btn[data-badge-name="아이디어"] {
+    background-color: #a7f3d0;
+    color: #064e3b;
+  }
+
+  .category-filter-btn[data-badge-name="아이디어"].active {
+    background-color: #6ee7b7;
+    color: #064e3b;
+  }
+
+  .category-filter-btn[data-badge-name="통계 분석 기법"] {
+    background-color: #fecaca;
+    color: #7f1d1d;
+  }
+
+  .category-filter-btn[data-badge-name="통계 분석 기법"].active {
+    background-color: #fca5a5;
+    color: #7f1d1d;
+  }
+
+  /* Fade animation for filtered posts */
+  .post-item {
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .post-item.hidden {
+    display: none;
+  }
 </style>
+
+<script>
+  function initCategoryFilter() {
+    const filterButtons = document.querySelectorAll('.category-filter-btn');
+    const postItems = document.querySelectorAll('.post-item');
+    const noResults = document.getElementById('no-results');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedCategory = button.getAttribute('data-category');
+        
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        // Filter posts
+        let visibleCount = 0;
+        postItems.forEach(post => {
+          const postCategory = post.getAttribute('data-category');
+          
+          if (selectedCategory === 'all' || postCategory === selectedCategory) {
+            post.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            post.classList.add('hidden');
+          }
+        });
+        
+        // Show/hide no results message
+        if (visibleCount === 0) {
+          noResults?.classList.remove('hidden');
+        } else {
+          noResults?.classList.add('hidden');
+        }
+      });
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', initCategoryFilter);
+  
+  // Re-initialize after Astro view transitions
+  document.addEventListener('astro:page-load', initCategoryFilter);
+</script>
