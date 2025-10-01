@@ -35,14 +35,14 @@ const allBadges = [...new Set(page.data.map(post => post.data.badge).filter(Bool
       <div class="mb-6">
         <div class="flex flex-wrap gap-2">
           <button 
-            class="category-filter-btn active text-xs px-3 py-1 transition-colors cursor-pointer"
+            class="category-filter-btn active text-xs px-2 py-0.5 transition-colors cursor-pointer"
             data-category="all"
           >
             All
           </button>
           {allBadges.map((badge) => (
             <button 
-              class="category-filter-btn text-xs px-3 py-1 transition-colors cursor-pointer"
+              class="category-filter-btn text-xs px-2 py-0.5 transition-colors cursor-pointer"
               data-category={badge}
               data-badge-name={badge}
             >
@@ -90,7 +90,7 @@ const allBadges = [...new Set(page.data.map(post => post.data.badge).filter(Bool
                 )}
               </div>
               
-              <p class="text-sm text-gray-600 mb-1 leading-relaxed">
+              <p class="text-sm text-gray-600 mb-2 leading-relaxed">
                 {post.data.description}
               </p>
               
