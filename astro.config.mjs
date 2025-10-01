@@ -5,7 +5,7 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://seunghoc.github.io',
+  site: 'https://seunhoc.vercel.app',
   integrations: [mdx(), sitemap(), tailwind()],
   devToolbar: {
     enabled: false  // Astro Dev Toolbar 비활성화
