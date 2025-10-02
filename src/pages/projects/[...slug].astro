@@ -114,60 +114,56 @@ const { Content } = await entry.render();
           <h2 class="text-lg font-semibold mb-4">상세 보고서</h2>
           
           <!-- Main PDF Viewer -->
-          <div class="pdf-viewer-container border rounded-lg bg-gray-50 p-4">
+          <div class="pdf-viewer-container" data-pdf-file={project.pdfFile}>
             <!-- Status Bar -->
-            <div class="flex justify-between items-center mb-4">
-              <div class="text-sm text-gray-600">
-                <span id="current-page">1</span> / <span id="total-pages">-</span> 페이지
+            <div class="flex justify-between items-center mb-3">
+              <div class="text-xs text-gray-500">
+                <span id="current-page">1</span> / <span id="total-pages">-</span>
               </div>
-              <div class="flex gap-2">
-                <button id="zoom-out" class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-                  -
+              <div class="flex gap-2 text-xs">
+                <button id="zoom-out" class="px-2 py-1 bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                  축소
                 </button>
-                <button id="zoom-in" class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-                  +
-                </button>
-                <button id="fullscreen-btn" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-                  전체화면
+                <button id="zoom-in" class="px-2 py-1 bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                  확대
                 </button>
               </div>
             </div>
             
             <!-- Main Canvas -->
-            <div class="pdf-canvas-container bg-white rounded border shadow-inner" style="height: 700px;">
+            <div class="pdf-canvas-container bg-white border border-gray-200" style="height: 700px;">
               <canvas id="pdf-canvas" class="mx-auto block cursor-grab"></canvas>
             </div>
           </div>
           
           <!-- Navigation Controls Below PDF -->
-          <div class="flex justify-center items-center gap-4 mt-4">
-            <button id="prev-page" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400">
-              ← 이전 페이지
+          <div class="flex justify-center items-center gap-3 mt-3">
+            <button id="prev-page" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+              ← 이전
             </button>
-            <div class="text-lg font-medium text-gray-700">
+            <div class="text-sm text-gray-600">
               <span id="current-page-display">1</span> / <span id="total-pages-display">-</span>
             </div>
-            <button id="next-page" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400">
-              다음 페이지 →
+            <button id="next-page" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+              다음 →
             </button>
           </div>
           
           <!-- Thumbnail Strip -->
-          <div class="mt-6">
-            <div class="text-sm font-medium text-gray-700 mb-3">페이지 미리보기</div>
+          <div class="mt-4">
+            <div class="text-xs text-gray-500 mb-2">미리보기</div>
             <div id="thumbnail-strip" class="flex gap-2 overflow-x-auto pb-2">
               <!-- 썸네일이 여기에 동적으로 생성됨 -->
             </div>
           </div>
           
           <!-- Fallback -->
-          <div class="mt-4 text-center">
-            <p class="text-sm text-gray-500">
+          <div class="mt-3 text-center">
+            <p class="text-xs text-gray-400">
               PDF 뷰어가 작동하지 않는 경우 
-              <a href={project.pdfFile} target="_blank" class="text-blue-600 hover:underline">
-                여기를 클릭하여 다운로드
+              <a href={project.pdfFile} target="_blank" class="text-gray-600 hover:text-gray-900 underline">
+                다운로드
               </a>
-              하세요.
             </p>
           </div>
         </div>
@@ -385,79 +381,22 @@ const { Content } = await entry.render();
   
   /* Thumbnail Styles */
   .thumbnail {
-    width: 120px;
-    height: 80px;
-    border: 2px solid transparent;
-    border-radius: 4px;
+    width: 100px;
+    height: 70px;
+    border: 1px solid #e5e7eb;
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
   
   .thumbnail:hover {
-    border-color: #3b82f6;
-    transform: scale(1.05);
+    border-color: #9ca3af;
+    transform: scale(1.02);
   }
   
   .thumbnail.active {
-    border-color: #1d4ed8;
-    box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.2);
-  }
-  
-  /* Fullscreen Styles */
-  .fullscreen-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .fullscreen-content {
-    position: relative;
-    max-width: 95vw;
-    max-height: 95vh;
-  }
-  
-  .fullscreen-controls {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 10px;
-    z-index: 10000;
-  }
-  
-  .fullscreen-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .fullscreen-nav:hover {
-    background: white;
-    transform: translateY(-50%) scale(1.1);
-  }
-  
-  .fullscreen-nav.prev {
-    left: 20px;
-  }
-  
-  .fullscreen-nav.next {
-    right: 20px;
+    border-color: #374151;
+    box-shadow: 0 0 0 1px #374151;
   }
   
   /* Progress Bar - PDF 하단에 올바르게 위치 */
@@ -566,7 +505,9 @@ const { Content } = await entry.render();
 <!-- PDF.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" is:inline></script>
 <script is:inline define:vars={{ pdfFile: project.pdfFile }}>
-  if (pdfFile && typeof pdfjsLib !== 'undefined') {
+  // PDF 초기화를 전역 함수로 선언
+  window.initializePDF = function(pdfFilePath) {
+    if (!pdfFilePath || typeof pdfjsLib === 'undefined') return;
     // PDF.js 설정 (한글 지원 강화)
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
@@ -582,7 +523,6 @@ const { Content } = await entry.render();
     let scale = 1.0;
     const canvas = document.getElementById('pdf-canvas');
     const ctx = canvas.getContext('2d');
-    let isFullscreen = false;
     
     // 버튼 요소들
     const prevBtn = document.getElementById('prev-page');
@@ -593,17 +533,16 @@ const { Content } = await entry.render();
     const totalPagesDisplay = document.getElementById('total-pages-display');
     const zoomInBtn = document.getElementById('zoom-in');
     const zoomOutBtn = document.getElementById('zoom-out');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
     const thumbnailStrip = document.getElementById('thumbnail-strip');
     
     // PDF 로드 함수
     async function loadPDF() {
       try {
-        console.log('PDF 로딩 시작:', pdfFile);
+        console.log('PDF 로딩 시작:', pdfFilePath);
         
         // PDF.js 로딩 옵션 설정
         const loadingTask = pdfjsLib.getDocument({
-          url: pdfFile,
+          url: pdfFilePath,
           cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
           cMapPacked: true,
           disableWorker: false,
@@ -801,110 +740,6 @@ const { Content } = await entry.render();
       }
     }
     
-    // 전체화면 모드
-    function toggleFullscreen() {
-      if (!isFullscreen) {
-        enterFullscreen();
-      } else {
-        exitFullscreen();
-      }
-    }
-    
-    function enterFullscreen() {
-      const overlay = document.createElement('div');
-      overlay.className = 'fullscreen-overlay';
-      overlay.id = 'fullscreen-overlay';
-      
-      const content = document.createElement('div');
-      content.className = 'fullscreen-content';
-      
-      const fullscreenCanvas = document.createElement('canvas');
-      fullscreenCanvas.id = 'fullscreen-canvas';
-      
-      const controls = document.createElement('div');
-      controls.className = 'fullscreen-controls';
-      controls.innerHTML = `
-        <button id="fs-prev" class="fullscreen-nav prev">←</button>
-        <button id="fs-next" class="fullscreen-nav next">→</button>
-        <button id="fs-close" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">닫기</button>
-      `;
-      
-      content.appendChild(fullscreenCanvas);
-      content.appendChild(controls);
-      overlay.appendChild(content);
-      document.body.appendChild(overlay);
-      
-      isFullscreen = true;
-      fullscreenBtn.textContent = '나가기';
-      
-      // 전체화면에서 렌더링
-      renderFullscreenPage(currentPage, fullscreenCanvas);
-      
-      // 이벤트 리스너
-      document.getElementById('fs-prev').addEventListener('click', () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderFullscreenPage(currentPage, fullscreenCanvas);
-          renderPage(currentPage); // 메인 캔버스도 업데이트
-          updateButtons();
-        }
-      });
-      
-      document.getElementById('fs-next').addEventListener('click', () => {
-        if (currentPage < pdfDoc.numPages) {
-          currentPage++;
-          renderFullscreenPage(currentPage, fullscreenCanvas);
-          renderPage(currentPage); // 메인 캔버스도 업데이트
-          updateButtons();
-        }
-      });
-      
-      document.getElementById('fs-close').addEventListener('click', exitFullscreen);
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) exitFullscreen();
-      });
-    }
-    
-    function exitFullscreen() {
-      const overlay = document.getElementById('fullscreen-overlay');
-      if (overlay) {
-        overlay.remove();
-      }
-      isFullscreen = false;
-      fullscreenBtn.textContent = '전체화면';
-    }
-    
-    async function renderFullscreenPage(pageNumber, canvas) {
-      try {
-        const page = await pdfDoc.getPage(pageNumber);
-        const ctx = canvas.getContext('2d');
-        
-        // 전체화면에 맞는 최대 크기로 스케일
-        const maxWidth = window.innerWidth * 0.9;
-        const maxHeight = window.innerHeight * 0.9;
-        
-        const viewport = page.getViewport({ scale: 1.0 });
-        const scaleX = maxWidth / viewport.width;
-        const scaleY = maxHeight / viewport.height;
-        const optimalScale = Math.min(scaleX, scaleY);
-        
-        const scaledViewport = page.getViewport({ scale: optimalScale });
-        
-        canvas.width = scaledViewport.width;
-        canvas.height = scaledViewport.height;
-        
-        await page.render({
-          canvasContext: ctx,
-          viewport: scaledViewport,
-          // 한글 텍스트 렌더링을 위한 옵션
-          textContent: true,
-          imageLayer: true
-        }).promise;
-      } catch (error) {
-        console.error('전체화면 렌더링 실패:', error);
-      }
-    }
-    
     // 버튼 상태 업데이트
     function updateButtons() {
       prevBtn.disabled = currentPage <= 1;
@@ -940,11 +775,9 @@ const { Content } = await entry.render();
       }
     });
     
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-    
     // 키보드 네비게이션
     document.addEventListener('keydown', (e) => {
-      if (isFullscreen || e.target.closest('.pdf-viewer-container')) {
+      if (e.target.closest('.pdf-viewer-container')) {
         switch(e.key) {
           case 'ArrowLeft':
             if (currentPage > 1) {
@@ -959,13 +792,6 @@ const { Content } = await entry.render();
               renderPage(currentPage);
               updateButtons();
             }
-            break;
-          case 'Escape':
-            if (isFullscreen) exitFullscreen();
-            break;
-          case 'f':
-          case 'F':
-            toggleFullscreen();
             break;
         }
       }
@@ -1013,46 +839,48 @@ const { Content } = await entry.render();
       canvas.classList.remove('dragging');
     });
     
+    
     // PDF 로드 시작
     loadPDF();
-  }
+  }; // window.initializePDF 끝
   
-  // Astro View Transitions 대응 (개선된 버전)
+  // 첫 로드 시 초기화
+  if (pdfFile) {
+    window.initializePDF(pdfFile);
+  }
+</script>
+
+<!-- Astro View Transitions 대응 (외부 스크립트) -->
+<script>
   document.addEventListener('astro:page-load', () => {
-    console.log('Astro page load event triggered'); // 디버그용
+    console.log('Astro page load event triggered');
     
-    // PDF 파일이 있는 경우에만 재초기화
-    if (pdfFile && typeof pdfjsLib !== 'undefined') {
-      // 기존 PDF 뷰어 요소들이 있는지 확인
-      const existingCanvas = document.getElementById('pdf-canvas');
-      const existingContainer = document.querySelector('.pdf-viewer-container');
+    // PDF 뷰어가 있는지 확인
+    const pdfContainer = document.querySelector('.pdf-viewer-container');
+    
+    if (pdfContainer && typeof window.initializePDF === 'function' && typeof pdfjsLib !== 'undefined') {
+      console.log('PDF viewer found, reinitializing...');
       
-      if (existingCanvas && existingContainer) {
-        console.log('PDF canvas found, reinitializing...'); // 디버그용
-        
-        // 변수 완전 재설정
-        pdfDoc = null;
-        currentPage = 1;
-        scale = 1.0;
-        isFullscreen = false;
-        
-        // 기존 진행 바 제거
-        const existingProgressBar = document.querySelector('.progress-bar');
-        if (existingProgressBar) {
-          existingProgressBar.remove();
-        }
-        
-        // 전체화면 닫기 (있다면)
-        const fullscreenOverlay = document.getElementById('fullscreen-overlay');
-        if (fullscreenOverlay) {
-          fullscreenOverlay.remove();
-        }
-        
-        // PDF 초기화 재실행 (지연시간 늘림)
+      // 기존 진행 바 제거
+      const existingProgressBar = document.querySelector('.progress-bar');
+      if (existingProgressBar) {
+        existingProgressBar.remove();
+      }
+      
+      // 전체화면 닫기
+      const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+      if (fullscreenOverlay) {
+        fullscreenOverlay.remove();
+      }
+      
+      // pdfFile 값을 data attribute에서 가져오기
+      const pdfFileAttr = pdfContainer.getAttribute('data-pdf-file');
+      
+      if (pdfFileAttr) {
         setTimeout(() => {
-          console.log('Starting PDF reload...'); // 디버그용
-          loadPDF();
-        }, 200); // 지연 시간 늘림
+          console.log('Reinitializing PDF:', pdfFileAttr);
+          window.initializePDF(pdfFileAttr);
+        }, 300);
       }
     }
     
@@ -1069,8 +897,10 @@ const { Content } = await entry.render();
       }, 100);
     }
   });
-  
-  // Image Lightbox 기능
+</script>
+
+<!-- Image Lightbox (전역 함수) -->
+<script is:inline>
   function initImageLightbox() {
     // 라이트박스 엘리먼트 생성
     const lightbox = document.createElement('div');
@@ -1142,6 +972,10 @@ const { Content } = await entry.render();
     });
   }
   
-  // DOM 로드 완료 후 이미지 라이트박스 초기화
-  document.addEventListener('DOMContentLoaded', initImageLightbox);
+  // 첫 로드 시 초기화
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initImageLightbox);
+  } else {
+    initImageLightbox();
+  }
 </script>

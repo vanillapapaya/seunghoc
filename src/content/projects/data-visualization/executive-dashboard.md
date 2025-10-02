@@ -7,10 +7,10 @@ tags: ["PowerBI", "Business Intelligence", "SQL", "Data Integration"]
 pdfFile: "/pdfs/powerbi.pdf"
 ---
 
-# 의사결정자를 위한 비즈니스 인터렉티브 대시보드 구축 예시
+## 의사결정자를 위한 비즈니스 인터렉티브 대시보드 구축 예시
 
 ### Google Studio 기반 대시보드 구축
 
-![보고서 1](/projects/attachment/visualization-1.png)
+![보고서 1](/images/project-dashboard-example.png)
 
 ### Power BI 기반 대시보드 구축

@@ -451,6 +451,12 @@ function getBadgeColor() {
 
   // Image Lightbox 기능
   function initImageLightbox() {
+    // 기존 라이트박스가 있으면 제거
+    const existingLightbox = document.querySelector('.image-lightbox');
+    if (existingLightbox) {
+      existingLightbox.remove();
+    }
+    
     const lightbox = document.createElement('div');
     lightbox.className = 'image-lightbox';
     lightbox.innerHTML = `

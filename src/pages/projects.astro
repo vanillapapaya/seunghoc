@@ -8,6 +8,7 @@ const projects = (await getCollection("projects")).sort((a, b) => b.data.pubDate
 const categories = {
   "Data Analysis Projects": projects.filter(p => p.data.category === "Data Analysis Projects"),
   "Game Analytics Projects": projects.filter(p => p.data.category === "Game Analytics Projects"),
+  "Game Design Analysis": projects.filter(p => p.data.category === "Game Design Analysis"),
   "Data Visualization Projects": projects.filter(p => p.data.category === "Data Visualization Projects"),
 };
 ---
@@ -19,81 +20,228 @@ const categories = {
     
     <!-- Data Analysis Projects -->
     {categories["Data Analysis Projects"].length > 0 && (
-      <div class="mb-6">
-        <h2 class="text-sm font-bold mb-3">[Data Analysis Projects]</h2>
+      <div class="mb-8">
+        <h2 class="text-sm font-bold mb-3 text-gray-800">[Data Analysis Projects]</h2>
         
-        <div class="space-y-4">
-          {categories["Data Analysis Projects"].map((project) => (
-            <div class="py-3 border-b border-gray-200">
+        <div class="ml-6">
+          {categories["Data Analysis Projects"].slice(0, 3).map((project) => (
+            <div class="mb-4 pb-4 border-b border-gray-200">
               <h3 class="text-sm font-semibold mb-1">
                 <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
                   {project.data.title}
                 </a>
               </h3>
-              <p class="text-sm text-gray-600 mb-1">
+              <p class="text-sm text-gray-600 mb-2">
                 {project.data.description}
               </p>
-              <div class="flex flex-wrap gap-3">
+              <div class="flex flex-wrap gap-2">
                 {project.data.tags && project.data.tags.map((tag) => (
-                  <span class="text-sm text-gray-400">#{tag}</span>
+                  <span class="text-xs text-gray-400">#{tag}</span>
                 ))}
               </div>
             </div>
           ))}
+          
+          {categories["Data Analysis Projects"].length > 3 && (
+            <>
+              <div class="hidden-projects-data-analysis" style="display: none;">
+                {categories["Data Analysis Projects"].slice(3).map((project) => (
+                  <div class="mb-4 pb-4 border-b border-gray-200">
+                    <h3 class="text-sm font-semibold mb-1">
+                      <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                        {project.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                      {project.data.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                      {project.data.tags && project.data.tags.map((tag) => (
+                        <span class="text-xs text-gray-400">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button 
+                class="text-sm text-gray-500 hover:text-gray-700 mt-2 show-more-btn"
+                data-target="data-analysis"
+              >
+                ⎿ 더보기 ({categories["Data Analysis Projects"].length - 3}개 더)
+              </button>
+            </>
+          )}
         </div>
       </div>
     )}
 
     <!-- Game Analytics Projects -->
     {categories["Game Analytics Projects"].length > 0 && (
-      <div class="mb-6">
-        <h2 class="text-sm font-bold mb-3">[Game Analytics Projects]</h2>
+      <div class="mb-8">
+        <h2 class="text-sm font-bold mb-3 text-gray-800">[Game Analytics Projects]</h2>
         
-        <div class="space-y-4">
-          {categories["Game Analytics Projects"].map((project) => (
-            <div class="py-3 border-b border-gray-200">
+        <div class="ml-6">
+          {categories["Game Analytics Projects"].slice(0, 3).map((project) => (
+            <div class="mb-4 pb-4 border-b border-gray-200">
               <h3 class="text-sm font-semibold mb-1">
                 <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
                   {project.data.title}
                 </a>
               </h3>
-              <p class="text-sm text-gray-600 mb-1">
+              <p class="text-sm text-gray-600 mb-2">
                 {project.data.description}
               </p>
-              <div class="flex flex-wrap gap-3">
+              <div class="flex flex-wrap gap-2">
                 {project.data.tags && project.data.tags.map((tag) => (
-                  <span class="text-sm text-gray-400">#{tag}</span>
+                  <span class="text-xs text-gray-400">#{tag}</span>
                 ))}
               </div>
             </div>
           ))}
+          
+          {categories["Game Analytics Projects"].length > 3 && (
+            <>
+              <div class="hidden-projects-game-analytics" style="display: none;">
+                {categories["Game Analytics Projects"].slice(3).map((project) => (
+                  <div class="mb-4 pb-4 border-b border-gray-200">
+                    <h3 class="text-sm font-semibold mb-1">
+                      <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                        {project.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                      {project.data.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                      {project.data.tags && project.data.tags.map((tag) => (
+                        <span class="text-xs text-gray-400">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button 
+                class="text-sm text-gray-500 hover:text-gray-700 mt-2 show-more-btn"
+                data-target="game-analytics"
+              >
+                ⎿ 더보기 ({categories["Game Analytics Projects"].length - 3}개 더)
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+
+    <!-- Game Design Analysis -->
+    {categories["Game Design Analysis"].length > 0 && (
+      <div class="mb-8">
+        <h2 class="text-sm font-bold mb-3 text-gray-800">[Game Design Analysis]</h2>
+        
+        <div class="ml-6">
+          {categories["Game Design Analysis"].slice(0, 3).map((project) => (
+            <div class="mb-4 pb-4 border-b border-gray-200">
+              <h3 class="text-sm font-semibold mb-1">
+                <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                  {project.data.title}
+                </a>
+              </h3>
+              <p class="text-sm text-gray-600 mb-2">
+                {project.data.description}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {project.data.tags && project.data.tags.map((tag) => (
+                  <span class="text-xs text-gray-400">#{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+          
+          {categories["Game Design Analysis"].length > 3 && (
+            <>
+              <div class="hidden-projects-game-design" style="display: none;">
+                {categories["Game Design Analysis"].slice(3).map((project) => (
+                  <div class="mb-4 pb-4 border-b border-gray-200">
+                    <h3 class="text-sm font-semibold mb-1">
+                      <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                        {project.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                      {project.data.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                      {project.data.tags && project.data.tags.map((tag) => (
+                        <span class="text-xs text-gray-400">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button 
+                class="text-sm text-gray-500 hover:text-gray-700 mt-2 show-more-btn"
+                data-target="game-design"
+              >
+                ⎿ 더보기 ({categories["Game Design Analysis"].length - 3}개 더)
+              </button>
+            </>
+          )}
         </div>
       </div>
     )}
 
     <!-- Data Visualization Projects -->
     {categories["Data Visualization Projects"].length > 0 && (
-      <div class="mb-6">
-        <h2 class="text-sm font-bold mb-3">[Data Visualization Projects]</h2>
+      <div class="mb-8">
+        <h2 class="text-sm font-bold mb-3 text-gray-800">[Data Visualization Projects]</h2>
         
-        <div class="space-y-4">
-          {categories["Data Visualization Projects"].map((project) => (
-            <div class="py-3 border-b border-gray-200">
+        <div class="ml-6">
+          {categories["Data Visualization Projects"].slice(0, 3).map((project) => (
+            <div class="mb-4 pb-4 border-b border-gray-200">
               <h3 class="text-sm font-semibold mb-1">
                 <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
                   {project.data.title}
                 </a>
               </h3>
-              <p class="text-sm text-gray-600 mb-1">
+              <p class="text-sm text-gray-600 mb-2">
                 {project.data.description}
               </p>
-              <div class="flex flex-wrap gap-3">
+              <div class="flex flex-wrap gap-2">
                 {project.data.tags && project.data.tags.map((tag) => (
-                  <span class="text-sm text-gray-400">#{tag}</span>
+                  <span class="text-xs text-gray-400">#{tag}</span>
                 ))}
               </div>
             </div>
           ))}
+          
+          {categories["Data Visualization Projects"].length > 3 && (
+            <>
+              <div class="hidden-projects-data-viz" style="display: none;">
+                {categories["Data Visualization Projects"].slice(3).map((project) => (
+                  <div class="mb-4 pb-4 border-b border-gray-200">
+                    <h3 class="text-sm font-semibold mb-1">
+                      <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                        {project.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                      {project.data.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                      {project.data.tags && project.data.tags.map((tag) => (
+                        <span class="text-xs text-gray-400">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button 
+                class="text-sm text-gray-500 hover:text-gray-700 mt-2 show-more-btn"
+                data-target="data-viz"
+              >
+                ⎿ 더보기 ({categories["Data Visualization Projects"].length - 3}개 더)
+              </button>
+            </>
+          )}
         </div>
       </div>
     )}
@@ -110,4 +258,38 @@ const categories = {
     text-decoration: underline;
     color: #111827;
   }
+  
+  /* 터미널 스타일 폰트 */
+  h2 {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro', monospace;
+  }
+  
+  .show-more-btn {
+    cursor: pointer;
+    transition: color 0.2s;
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.show-more-btn');
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.getAttribute('data-target');
+        const hiddenDiv = document.querySelector(`.hidden-projects-${target}`);
+        
+        if (hiddenDiv) {
+          if (hiddenDiv.style.display === 'none') {
+            hiddenDiv.style.display = 'block';
+            button.textContent = '⎿ 접기';
+          } else {
+            hiddenDiv.style.display = 'none';
+            const count = hiddenDiv.children.length;
+            button.textContent = `⎿ 더보기 (${count}개 더)`;
+          }
+        }
+      });
+    });
+  });
+</script>
