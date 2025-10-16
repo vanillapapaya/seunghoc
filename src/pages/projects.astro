@@ -2,7 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
-const projects = (await getCollection("projects")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const projects = (await getCollection("projects"))
+  .filter(project => !project.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // 카테고리별로 프로젝트 분류
 const categories = {
@@ -10,6 +12,7 @@ const categories = {
   "Game Analytics Projects": projects.filter(p => p.data.category === "Game Analytics Projects"),
   "Game Design Analysis": projects.filter(p => p.data.category === "Game Design Analysis"),
   "Data Visualization Projects": projects.filter(p => p.data.category === "Data Visualization Projects"),
+  "Side Projects": projects.filter(p => p.data.category === "Side Projects"),
 };
 ---
 
@@ -18,6 +21,63 @@ const categories = {
     
     <h1 class="text-sm font-bold mb-6">Projects</h1>
     
+    <!-- Side Projects -->
+    {categories["Side Projects"].length > 0 && (
+      <div class="mb-8">
+        <h2 class="text-sm font-bold mb-3 text-gray-800">[Side Projects]</h2>
+        
+        <div class="ml-6">
+          {categories["Side Projects"].slice(0, 3).map((project) => (
+            <div class="mb-4 pb-4 border-b border-gray-200">
+              <h3 class="text-sm font-semibold mb-1">
+                <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                  {project.data.title}
+                </a>
+              </h3>
+              <p class="text-sm text-gray-600 mb-2">
+                {project.data.description}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {project.data.tags && project.data.tags.map((tag) => (
+                  <span class="text-xs text-gray-400">#{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+          
+          {categories["Side Projects"].length > 3 && (
+            <>
+              <div class="hidden-projects-side-projects" style="display: none;">
+                {categories["Side Projects"].slice(3).map((project) => (
+                  <div class="mb-4 pb-4 border-b border-gray-200">
+                    <h3 class="text-sm font-semibold mb-1">
+                      <a href={`/projects/${project.slug}`} class="text-gray-700 hover:text-gray-900">
+                        {project.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                      {project.data.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                      {project.data.tags && project.data.tags.map((tag) => (
+                        <span class="text-xs text-gray-400">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button 
+                class="text-sm text-gray-500 hover:text-gray-700 mt-2 show-more-btn"
+                data-target="side-projects"
+              >
+                ⎿ 더보기 ({categories["Side Projects"].length - 3}개 더)
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+
     <!-- Data Analysis Projects -->
     {categories["Data Analysis Projects"].length > 0 && (
       <div class="mb-8">
@@ -271,7 +331,8 @@ const categories = {
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  // View Transitions와 호환되는 이벤트 사용
+  document.addEventListener('astro:page-load', () => {
     const buttons = document.querySelectorAll('.show-more-btn');
     
     buttons.forEach(button => {

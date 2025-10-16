@@ -10,6 +10,7 @@ const blogSchema = z.object({
     tags: z.array(z.string()).refine(items => new Set(items).size === items.length, {
         message: 'tags must be unique',
     }).optional(),
+    draft: z.boolean().optional(),
 });
 
 const projectSchema = z.object({
@@ -22,6 +23,7 @@ const projectSchema = z.object({
     github: z.string().optional(),
     demo: z.string().optional(),
     pdfFile: z.string().optional(),
+    draft: z.boolean().optional(),
 });
 
 export type BlogSchema = z.infer<typeof blogSchema>;
