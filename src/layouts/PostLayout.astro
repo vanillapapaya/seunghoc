@@ -6,16 +6,6 @@ export interface Props extends BlogSchema {}
 
 const { title, description, pubDate, updatedDate, heroImage, badge, tags = [], color } = Astro.props;
 import { Image } from "astro:assets";
-
-// Badge 색상 얻기 함수
-function getBadgeColor() {
-  if (color) {
-    // color 값에서 텍스트 색상만 추출
-    const match = color.match(/text-(\S+)/);
-    return match ? match[1] : 'gray-500';
-  }
-  return 'gray-500';
-}
 ---
 
 <BaseLayout title={title} description={description} image={heroImage}, ogType="article">
@@ -35,7 +25,7 @@ function getBadgeColor() {
           </div>
           
           {badge && (
-            <div class={`text-sm text-${getBadgeColor()}`}>
+            <div class={color || "text-gray-500"}>
               {badge}
             </div>
           )}
